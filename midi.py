@@ -6,6 +6,16 @@ import random
 noteOn = 1
 noteOff = 0
 
+inputConnection = None
+outputConnection = None
+
+def begin():
+    (inputID,outputID) = deviceInfo();
+    print "Detected Launchpad on input " + str(inputID) + " and output " + str(outputID)
+    inputConnection = midi.Input(inputID)
+    outputConnection = midi.Output(outputID)
+    print "Connection established"
+
 def deviceInfo():
     infos = [midi.get_device_info(n) for n in range(0, midi.get_count())]
     i=0
@@ -37,22 +47,10 @@ class Note:
         data = [[[144, self.number, self.velocity, 0], midi.time()]]
         outputConnection.write(data)
 
-(inputID,outputID) = deviceInfo();
-print "Detected Launchpad on input " + str(inputID) + " and output " + str(outputID)
-inputConnection = midi.Input(inputID)
-outputConnection = midi.Output(outputID)
-print "Connection established"
-
-while True:
-    if inputConnection.poll():
-        note = Note(inputConnection.read(1));
-        if note.noteOn:
-            note.velocity=random.randint(1,127)
-        note.send()
-
-inputConnection.close()
-outputConnection.close()
-midi.quit()
+def close():
+    inputConnection.close()
+    outputConnection.close()
+    midi.quit()
 
 
 
