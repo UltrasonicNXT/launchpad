@@ -44,6 +44,21 @@ class Button:
         self.down = data[0][0][2]==127
         self.up = data[0][0][2]!=127
 
+        self.side = False
+        self.top = False
+        if self.x==8:
+            self.side = True
+        if self.y==9:
+            self.top = True
+            self.x = self.x - 3
+        if self.y==10:
+            self.top = True
+            if self.x == -1:
+                self.x = 6
+            elif self.x == 0:
+                self.x = 7
+        self.grid = not self.side and not self.top
+
     def send(self):
         data = [[[144, self.number, self.velocity, 0], midi.time()]]
         self.connection.output.write(data)
