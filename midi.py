@@ -26,7 +26,7 @@ class Connection:
 
     def read(self,n=1):
         data = self.input.read(n)
-        return Note(self,data=data)
+        return Button(self,data=data)
 
     def close(self):
         self.input.close()
@@ -34,27 +34,32 @@ class Connection:
         midi.quit()
 
 
-class Note:
-    def __init__(self,connection,data=None,coordinate=None,velocity=None):
+class Button:
+    def __init__(self,connection,data):
         self.connection=connection
-        if data:
-            self.velocity = data[0][0][2]
-            self.number = data[0][0][1]
-            self.x = self.number%10 - 1
-            self.y = self.number/10 - 1
-            self.coordinate = (self.x,self.y)
-        else:
-            self.x = coordinate[0]
-            self.y = coordinate[1]
-            self.velocity = velocity
-            self.coordinate = coordinate
-            self.number = 10*(y+1) + x+1
-        self.noteOn = self.velocity==127
+        self.number = data[0][0][1]
+        self.x = self.number%10 - 1
+        self.y = self.number/10 - 1
+        self.coordinate = (self.x,self.y)
+        self.down = data[0][0][2]==127
+        self.up = data[0][0][2]!=127
 
     def send(self):
         data = [[[144, self.number, self.velocity, 0], midi.time()]]
         self.connection.output.write(data)
 
+class LED:
+    def __init__(self,connection,coordinate,velocity):
+        self.connection=connection
+        self.x = coordinate[0]
+        self.y = coordinate[1]
+        self.velocity = velocity
+        self.coordinate = coordinate
+        self.number = 10*(self.y+1) + self.x+1
+        self.noteOn = self.velocity==127
 
+    def send(self):
+        data = [[[144, self.number, self.velocity, 0], midi.time()]]
+        self.connection.output.write(data)
 
     
