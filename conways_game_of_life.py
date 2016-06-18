@@ -25,60 +25,29 @@ while True:
 
 while True:
     newMatrix = [[0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0]]
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0],
+                 [0,0,0,0,0,0,0,0]]
     for y,row in enumerate(matrix):
         for x,val in enumerate(row):
-            neighbors = []
-            if x > 0:
-                neighbors.append(matrix[y][x-1])
-            else:
-                neighbors.append(matrix[y][7])
-                
-            if x < 7:
-                neighbors.append(matrix[y][x+1])
-            else:
-                neighbors.append(matrix[y][0])
-                
-            if y > 0:
-                neighbors.append(matrix[y-1][x])
-            else:
-                neighbors.append(matrix[7][x])
-                
-            if y < 7:
-                neighbors.append(matrix[y+1][x])
-            else:
-                neighbors.append(matrix[0][x])
-                
-            if x > 0 and y > 0:
-                neighbors.append(matrix[y-1][x-1])
-            else:
-                neighbors.append(matrix[7][7])
-                
-            if x > 0 and y < 7:
-                neighbors.append(matrix[y+1][x-1])
-            else:
-                neighbors.append(matrix[0][7])
-                
-            if x < 7 and y > 0:
-                neighbors.append(matrix[y-1][x+1])
-            else:
-                neighbors.append(matrix[7][0])
-                
-            if x < 7 and y < 7:
-                neighbors.append(matrix[y+1][x+1])
-            else:
-                neighbors.append(matrix[0][0])
-                
+            left = x-1 if x > 0 else 7
+            right = x+1 if x < 7 else 0
+            down = y-1 if y > 0 else 7
+            up = y+1 if y < 7 else 0
+
+            neighborAddresses = [(left,up),   (x,up),   (right,up),
+                                 (left,y),              (right,y),
+                                 (left,down), (x,down), (right,down)]
+            
             aliveNeighbors = 0
-            for val in neighbors:
-                if val:
+            for coordinate in neighborAddresses:
+                if matrix[coordinate[1]][coordinate[0]]:
                     aliveNeighbors += 1
+                    
             if matrix[y][x]:
                 if aliveNeighbors < 2:
                     newMatrix[y][x] = 0
@@ -96,7 +65,7 @@ while True:
             led.send()
     matrix = newMatrix
     
-    time.sleep(1)
+    time.sleep(0.1)
     
     if conn.poll():
         button = conn.read()
