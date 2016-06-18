@@ -29,6 +29,7 @@ class Connection:
         return Button(self,data=data)
 
     def close(self):
+        self.output.write_sys_ex(midi.time(),[0b11110000, 00, 32, 41, 2, 24, 14, 0, 247])
         self.input.close()
         self.output.close()
         midi.quit()
@@ -74,7 +75,7 @@ class LED:
         self.noteOn = self.velocity==127
 
     def send(self):
-        data = [[[144, self.number, self.velocity, 0], midi.time()]]
+        data = [[[0b10010000, self.number, self.velocity, 0], midi.time()]]
         self.connection.output.write(data)
 
     

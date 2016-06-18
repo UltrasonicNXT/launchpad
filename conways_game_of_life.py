@@ -21,6 +21,7 @@ while True:
             led.send()
         elif button.side:
             break
+    time.sleep(0.001)
 
 while True:
     newMatrix = [[0,0,0,0,0,0,0,0],
@@ -36,20 +37,44 @@ while True:
             neighbors = []
             if x > 0:
                 neighbors.append(matrix[y][x-1])
+            else:
+                neighbors.append(matrix[y][7])
+                
             if x < 7:
                 neighbors.append(matrix[y][x+1])
+            else:
+                neighbors.append(matrix[y][0])
+                
             if y > 0:
                 neighbors.append(matrix[y-1][x])
+            else:
+                neighbors.append(matrix[7][x])
+                
             if y < 7:
                 neighbors.append(matrix[y+1][x])
+            else:
+                neighbors.append(matrix[0][x])
+                
             if x > 0 and y > 0:
                 neighbors.append(matrix[y-1][x-1])
+            else:
+                neighbors.append(matrix[7][7])
+                
             if x > 0 and y < 7:
                 neighbors.append(matrix[y+1][x-1])
+            else:
+                neighbors.append(matrix[0][7])
+                
             if x < 7 and y > 0:
                 neighbors.append(matrix[y-1][x+1])
+            else:
+                neighbors.append(matrix[7][0])
+                
             if x < 7 and y < 7:
                 neighbors.append(matrix[y+1][x+1])
+            else:
+                neighbors.append(matrix[0][0])
+                
             aliveNeighbors = 0
             for val in neighbors:
                 if val:
@@ -73,10 +98,11 @@ while True:
     
     time.sleep(1)
     
-    """if conn.poll():
+    if conn.poll():
         button = conn.read()
-        if button.side:
-            break"""
+        if button.side and button.down:
+            print "breaking"
+            break
 
 conn.close()
                 
